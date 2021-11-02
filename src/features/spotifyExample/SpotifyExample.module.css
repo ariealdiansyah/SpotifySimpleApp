@@ -38,3 +38,15 @@
 .button:focus {
   border: 2px solid rgba(112, 76, 182, 0.4);
 }
+
+.container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mainContent {
+  display: flex;
+  height: calc(100vh - 92px);
+}

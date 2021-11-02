@@ -27,8 +27,8 @@ export function SpotifyExample() {
   }, []);
 
   return (
-    <div>
-      <div className={styles.column}>
+    <div className={styles.container}>
+      <div className={styles.mainContent}>
         <Authorization />
         {isLoggedIn && <div>
           {displayName && <div className={styles.row}>
