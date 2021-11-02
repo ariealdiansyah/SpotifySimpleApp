@@ -15,7 +15,8 @@ interface SpotifyExampleState {
   userFollwers: any,
   nation: string,
   imagesPlaylist: string,
-  descPlaylist: string
+  descPlaylist: string,
+  isPlaylist: boolean
 }
 
 const initialState: SpotifyExampleState = {
@@ -29,7 +30,8 @@ const initialState: SpotifyExampleState = {
   userFollwers: '',
   nation: '',
   imagesPlaylist:'',
-  descPlaylist:''
+  descPlaylist:'',
+  isPlaylist: false
 };
 
 export const spotifyexampleSlice = createSlice({
@@ -69,6 +71,9 @@ export const spotifyexampleSlice = createSlice({
     setDescPlaylist: (state, action: PayloadAction<string>) => {
       state.descPlaylist = action.payload
     },
+    setIsPlaylist: (state, action: PayloadAction<boolean>) => {
+      state.isPlaylist = action.payload;
+    },
   },
 });
 
@@ -83,7 +88,8 @@ export const {
   setIdPlaylist,
   setNation,
   setImagesPlaylist,
-  setDescPlaylist
+  setDescPlaylist,
+  setIsPlaylist
 } = spotifyexampleSlice.actions;
 export const selectDisplayName = (state: RootState) => {
   return state.spotifyExample.displayName
@@ -101,6 +107,7 @@ export const selectUserFollowers = (state: RootState) => state.spotifyExample.us
 export const selectNation = (state: RootState) => state.spotifyExample.nation;
 export const selectPlaylistImages = (state: RootState) => state.spotifyExample.imagesPlaylist;
 export const selectPlaylistDesc = (state: RootState) => state.spotifyExample.descPlaylist;
+export const selectIsPlaylist = (state : RootState) => state.spotifyExample.isPlaylist;
 
 export const setUserProfileAsync = (accessToken: string): AppThunk => dispatch => {
   const myHeaders = new Headers();
@@ -201,6 +208,7 @@ export const getListMusicByPlaylistId = (token: string, id: string): AppThunk =>
       console.log(data)
       dispatch(setListSongOfPlaylist(data.items))
       dispatch(setIdPlaylist(id));
+      dispatch(setIsPlaylist(true));
     })
     .catch((err) => {
       console.log(err);

@@ -29,6 +29,22 @@ export const FixedTopBar = styled.div`
   position: absolute;
   padding: 10px;
 `
+export const ListSongs = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: hidden;
+  width: auto;
+  margin-bottom: 5px;  
+  margin-left: 20px;
+  align-content: space-between;
+  flex-wrap: nowrap;
+  flex-direction: row;
+
+  > div {
+    padding: 15px 0px;
+  }
+`
 
 export const ArrowsSearchContainer = styled.div`
   display: flex;

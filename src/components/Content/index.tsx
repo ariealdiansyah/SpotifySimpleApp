@@ -27,27 +27,30 @@ import {
   CategoryTitle,
   CategoryContainer,
   CategoryItens,
-  FixedTopBar
+  FixedTopBar,
+  ListSongs
 } from './styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectIsLoggedIn, setAccessToken, setLoggedIn, setTokenExpiryDate } from '../../features/authorization/authorizationSlice'
-import { categoryServices, playlistServices, selectDisplayName, selectPlaylist, selectPlaylistDesc, selectPlaylistImages, selectUserId, selectUserProfile, setUserProfileAsync } from '../../features/spotifyExample/spotifyExampleSlice'
+import { selectAccessToken, selectIsLoggedIn, setAccessToken, setLoggedIn, setTokenExpiryDate } from '../../features/authorization/authorizationSlice'
+import { categoryServices, getListMusicByPlaylistId, playlistServices, selectDisplayName, selectIsPlaylist, selectListSongs, selectPlaylist, selectPlaylistDesc, selectPlaylistImages, selectUserId, selectUserProfile, setUserProfileAsync } from '../../features/spotifyExample/spotifyExampleSlice'
 import { getAuthorizeHref } from '../../oauthConfig'
 import { getHashParams, removeHashParamsFromUrl } from '../../utils/hashUtils'
 
 interface CatergoryItemProps {
   imgUrl: string
   title: string
-  description: string
+  description: string,
+  actions: any
 }
 
 const CategoryItem: React.FC<CatergoryItemProps> = ({
   imgUrl,
   title,
-  description
+  description,
+  actions
 }) => {
   return (
-    <CategoryContainer>
+    <CategoryContainer onClick={actions}>
       <img src={imgUrl} alt={title}></img>
       <b>{title}</b>
       <p>{description}</p>
@@ -65,10 +68,16 @@ const Content: React.FC = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn)
   const displayName = useSelector(selectDisplayName);
   const id = useSelector(selectUserId);
+  const token = useSelector(selectAccessToken)
   const uriProfile = useSelector(selectUserProfile)
   const playlist = useSelector(selectPlaylist);
   const imgPlaylist = useSelector(selectPlaylistImages)
   const descPlaylist = useSelector(selectPlaylistDesc)
+  const isGetTracks = useSelector(selectIsPlaylist)
+  const listSongs = useSelector(selectListSongs);
+  const getPlaylist = (idPlaylist: string) => {
+    dispatch(getListMusicByPlaylistId(token, idPlaylist))
+  }
   useEffect(() => {
     if (access_token) {
       dispatch(setLoggedIn(true));
@@ -124,7 +133,8 @@ const Content: React.FC = () => {
       <ContentBody>
         <Category>
           <CategoryTitle>
-            <span>Playlist</span>
+            {isGetTracks && <span>List Music</span>}
+            {!isGetTracks && <span>Playlist</span>}
             <div>
               <MdKeyboardArrowLeft color={'#aaa'} size={30} />
               <MdKeyboardArrowRight size={30} />
@@ -132,19 +142,26 @@ const Content: React.FC = () => {
           </CategoryTitle>
           <CategoryItens>
             {isLoggedIn && <div>
-              {playlist.map(x =>
+              {!isGetTracks && playlist.map(x =>
                 <CategoryItem
                   key={x.id}
                   title={x.name}
                   imgUrl={imgPlaylist}
                   description={descPlaylist || 'No Description'}
+                  actions={() => getPlaylist(x.id)}
                 />)
-              }</div>
+              }
+              {isGetTracks && listSongs.map(y => <ListSongs key={y.track.id}>
+                <img src={y.track.album.images[2].url} alt={y.track.album.name}></img>
+                <b>{y.track.name}</b>
+              </ListSongs>)}
+            </div>
             }
             {!isLoggedIn &&
               <CategoryItem
                 imgUrl={lofiImg}
                 title="lofi hip hop"
+                actions=''
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
               />
             }
